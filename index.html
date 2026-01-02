@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <link rel="icon" href="c11.png">
+    <style>
+        body{
+            background-color: black;
+            color: white;
+            font-size: 18px;
+
+        }
+        h1{
+
+        }
+        .emoji{
+            height: 60px;
+            width: 60px; 
+            
+        }
+
+        .emoji-{
+            height: 50px;
+            width: 50px; 
+            
+        }
+        .em{
+            background-color: transparent;
+            border: 2px solid white;
+            padding: 10px;
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            margin: 10px;
+            cursor: pointer;
+           
+        }
+        .reset{
+            width: 120px;
+            height: 40px;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>
+        Rock Paper Scissor 
+    </h1>
+</header>
+
+<main>
+    <button onclick="pick('rock')" class="em">
+        <img src="rock.jpg" alt="rock" class="emoji">
+    </button>
+
+    <button onclick="pick('paper')" class="em">
+        
+        <img src="paper.jpg" alt="paper" class="emoji">
+    </button>
+
+    <button onclick="pick('scissor')" class="em">
+        <img src="scissor.jpg" alt="scissor" class="emoji">
+    </button>
+
+    
+
+    <p class="js-score"></p>
+    <button onclick="pick('reset')" class="reset">
+        <span class="emoji">🔄</span>
+        Reset
+    </button>
+</main>
+
+<script>
+    const points = JSON.parse(localStorage.getItem(('points')))  || {
+    Wins: 0,
+    Losses: 0,
+    Ties: 0
+};
+    
+    function computerPick() {
+        const x = Math.random();
+
+        if (x < 1 / 3)
+            return 'rock';
+
+        if (x < 2 / 3)
+            return 'paper';
+
+        return 'scissor';
+    }
+
+    function pick(userpick) {
+        let result = '';
+        let move = '';
+
+        if (userpick === 'reset') {
+            points.Wins = points.Losses = points.Ties = 0;
+
+            document.querySelector('.js-score').innerHTML = `
+                Scores are Reseted <br>
+                <br>
+                Wins : ${points.Wins} , 
+                Losses : ${points.Losses} , 
+                Ties : ${points.Ties}
+            `;
+            return;
+        }
+
+        if (userpick !== 'reset') {
+            move = computerPick();
+
+            if (userpick === move) {
+                result = 'Tie 🤝';
+                points.Ties++;
+            } 
+            else if (
+                (userpick === 'rock' && move === 'scissor') ||
+                (userpick === 'paper' && move === 'rock') ||
+                (userpick === 'scissor' && move === 'paper')
+            ) {
+                result = 'You Won 🎉';
+                points.Wins++;
+            } 
+            else {
+                result = 'You Lost 😢';
+                points.Losses++;
+            }
+            localStorage.setItem("points",JSON.stringify(points));
+        }
+
+        document.querySelector('.js-score').innerHTML =
+            `Result: ${result} <br><br>
+            You picked <img src="${userpick}.jpg" class="emoji-">  Computer picked <img src="${move}.jpg" class="emoji-"> <br><br>
+            
+            <br>
+            Wins: ${points.Wins}, Losses: ${points.Losses}, Ties: ${points.Ties}`;
+    }
+</script>
+
+</body>
+</html>
